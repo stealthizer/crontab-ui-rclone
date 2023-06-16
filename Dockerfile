@@ -3,6 +3,7 @@ FROM  alpine
 
 ENV   CRON_PATH /etc/crontabs
 ENV   RCLONE_VERSION=current
+ENV   MEGATOOLS_VERSION="1.11.1.20230212"
 ENV   ARCH=amd64
 
 
@@ -25,6 +26,9 @@ RUN   apk --no-cache add \
       && unzip /tmp/rclone-${RCLONE_VERSION}-linux-${ARCH}.zip \
       && mv /tmp/rclone-*-linux-${ARCH}/rclone /usr/bin \
       && rm -r /tmp/rclone* \
+      && wget https://megatools.megous.com/builds/builds/megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz \
+      && tar xvfzp /tmp/megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz \
+      && mv /tmp//megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz/megatools /usr/bin \
       && addgroup rclone \
       && adduser -h /config -s /bin/ash -G rclone -D rclone
 
