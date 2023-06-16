@@ -4,7 +4,7 @@ FROM  alpine
 ENV   CRON_PATH /etc/crontabs
 ENV   RCLONE_VERSION=current
 ENV   ARCH=amd64
-ENV   RCLONE_VERSION=true
+
 
 RUN   mkdir /crontab-ui; touch $CRON_PATH/root; chmod +x $CRON_PATH/root
 
@@ -39,6 +39,8 @@ ENV   HOST 0.0.0.0
 ENV   PORT 8000
 
 ENV   CRON_IN_DOCKER true
+
+ENV   RCLONE_VERSION=true
 
 EXPOSE $PORT
 
