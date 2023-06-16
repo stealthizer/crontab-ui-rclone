@@ -1,14 +1,18 @@
-# docker run -d -p 8000:8000 alseambusher/crontab-ui
-FROM alpine:3.15.3
+# docker run -d -p 8000:8000 stealthizer/crontab-ui-rclone
+FROM  alpine
 
 ENV   CRON_PATH /etc/crontabs
+ENV   RCLONE_VERSION=current
+ENV   MEGATOOLS_VERSION="1.11.1.20230212"
+ENV   ARCH=amd64
+
 
 RUN   mkdir /crontab-ui; touch $CRON_PATH/root; chmod +x $CRON_PATH/root
 
 WORKDIR /crontab-ui
 
-LABEL maintainer "@alseambusher"
-LABEL description "Crontab-UI docker"
+LABEL maintainer "@stealthizer"
+LABEL description "Crontab-UI docker with rclone"
 
 RUN   apk --no-cache add \
       wget \
@@ -16,7 +20,18 @@ RUN   apk --no-cache add \
       nodejs \
       npm \
       supervisor \
-      tzdata
+      tzdata \
+      && cd /tmp \
+      && wget -q http://downloads.rclone.org/rclone-${RCLONE_VERSION}-linux-${ARCH}.zip \
+      && unzip /tmp/rclone-${RCLONE_VERSION}-linux-${ARCH}.zip \
+      && mv /tmp/rclone-*-linux-${ARCH}/rclone /usr/bin \
+      && rm -r /tmp/rclone* \
+      && wget https://megatools.megous.com/builds/builds/megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz \
+      && tar xvfzp /tmp/megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz \
+      && mv /tmp//megatools-${MEGATOOLS_VERSION}-linux-i686.tar.gz/megatools /usr/bin \
+      && addgroup rclone \
+      && adduser -h /config -s /bin/ash -G rclone -D rclone
+
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY . /crontab-ui
@@ -28,6 +43,8 @@ ENV   HOST 0.0.0.0
 ENV   PORT 8000
 
 ENV   CRON_IN_DOCKER true
+
+ENV   RCLONE_VERSION=true
 
 EXPOSE $PORT
 
