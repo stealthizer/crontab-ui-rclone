@@ -1,9 +1,10 @@
-# docker run -d -p 8000:8000 stealthizer/crontab-ui
-FROM  alpine:3.15.3
+# docker run -d -p 8000:8000 stealthizer/crontab-ui-rclone
+FROM  alpine
 
 ENV   CRON_PATH /etc/crontabs
 ENV   RCLONE_VERSION=current
 ENV   ARCH=amd64
+ENV   RCLONE_VERSION=true
 
 RUN   mkdir /crontab-ui; touch $CRON_PATH/root; chmod +x $CRON_PATH/root
 
